@@ -1,0 +1,6 @@
+<tim_project>
+    <properties buffer_res="0" buffer_order="0"/>
+    <tim_group name="global">
+        <tim file="SPRITE.tim"/>
+    </tim_group>
+</tim_project>

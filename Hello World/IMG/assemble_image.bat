@@ -1,0 +1,1 @@
+asmpsx /l my_image.asm,my_image.obj
