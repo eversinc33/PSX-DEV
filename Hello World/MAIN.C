@@ -48,7 +48,6 @@ typedef struct _PADTYPE
     unsigned char	ls_x,ls_y;
 } PADTYPE;
 
-
 u_char padbuff[2][34]; // Pad buffer arrays
 
 typedef struct _SPRITE {
@@ -62,6 +61,14 @@ typedef struct _SPRITE {
 SPRITE my_sprite;
 TIM_IMAGE my_image;   
 extern u_long char_sprite[]; // Refers to assembled tim-obj
+
+typedef enum { IDLE, MOVING } CHARACTER_STATE;
+
+typedef struct _PLAYER_CHAR {
+    CHARACTER_STATE state;
+    int x;
+    int y;
+} PLAYER_CHAR;
 
 // Draw the screen
 void display() {
@@ -178,7 +185,7 @@ void init(void) {
 }
 
 // Add spriteToRender to the ordering table
-void sortSprite(int pos_x, int pos_y, SPRITE *spriteToRender, DRAWENV *currentDrawEnv, u_long *currentOrderingTable) {
+void sortSprite(int x, int y, SPRITE *spriteToRender, DRAWENV *currentDrawEnv, u_long *currentOrderingTable) {
 
     SPRT *sprt = (SPRT*)nextpri;   
 
@@ -189,7 +196,7 @@ void sortSprite(int pos_x, int pos_y, SPRITE *spriteToRender, DRAWENV *currentDr
     setSprt(sprt);                 
 
     // set values (pos, size, uv, clut, color)
-    setXY0(sprt, pos_x, pos_y);           
+    setXY0(sprt, x, y);           
     setWH(sprt, spriteToRender->width, spriteToRender->height); 
     setUV0(sprt, spriteToRender->u, spriteToRender->v);
     sprt->clut = spriteToRender->clut;
@@ -202,7 +209,7 @@ void sortSprite(int pos_x, int pos_y, SPRITE *spriteToRender, DRAWENV *currentDr
     nextpri += sizeof(SPRT);        
 }
 
-void sortSpriteSheetSprite(int pos_x, int pos_y, int sprite_width, int sprite_height, int sprite_row, int sprite_col, SPRITE *spriteToRender, DRAWENV *currentDrawEnv, u_long *currentOrderingTable) {
+void sortSpriteSheetSprite(int x, int y, int sprite_width, int sprite_height, int sprite_row, int sprite_col, SPRITE *spriteToRender, DRAWENV *currentDrawEnv, u_long *currentOrderingTable) {
 
     SPRT *sprt = (SPRT*)nextpri;   
 
@@ -217,7 +224,7 @@ void sortSpriteSheetSprite(int pos_x, int pos_y, int sprite_width, int sprite_he
     setSprt(sprt);                 
 
     // set values (pos, size, uv, clut, color)
-    setXY0(sprt, pos_x, pos_y);           
+    setXY0(sprt, x, y);           
     setWH(sprt, sprite_width, sprite_height); 
     setUV0(sprt, u, v);
     sprt->clut = spriteToRender->clut;
@@ -230,19 +237,19 @@ void sortSpriteSheetSprite(int pos_x, int pos_y, int sprite_width, int sprite_he
     nextpri += sizeof(SPRT);        
 }
 
-// Add a cube to the ordering table
-void sortCube64(int pos_x, int pos_y, u_long *currentOrderingTable) {
+// Add a cube primitive to the ordering table
+void sortCube64(int x, int y, u_long *currentOrderingTable) {
 
     TILE *tile = (TILE*)nextpri;    
-    int size_x = 64;
-    int size_y = 64;
+    int width  = 64;
+    int height = 64;
 
     // initialize
     setTile(tile);
 
     // set values  
-    setXY0(tile, pos_x, pos_y);           
-    setWH(tile, size_x, size_y);      
+    setXY0(tile, x, y);           
+    setWH(tile, width, height);      
     setRGB0(tile, 255, 255, 0);     
 
     // Sort primitive to the ordering table
@@ -252,7 +259,7 @@ void sortCube64(int pos_x, int pos_y, u_long *currentOrderingTable) {
     nextpri += sizeof(TILE);        
 }
 
-void getControllerInput(int *pos_x, int *pos_y) {
+void getControllerInput(PLAYER_CHAR *player) {
     
   	PADTYPE *pad;
     pad = (PADTYPE*)padbuff[0];
@@ -261,22 +268,22 @@ void getControllerInput(int *pos_x, int *pos_y) {
     {
         if ((pad->type == PAD_TYPE_DIGITAL) || (pad->type == PAD_TYPE_DUAL_ANALOG) || (pad->type == PAD_TYPE_DUAL_SHOCK)) 
         {
-            if(!(pad->btn & PAD_UP)) 
-            {
-                (*pos_y)--;
-            } 
-            else if(!(pad->btn & PAD_DOWN)) 
-            {
-                (*pos_y)++;
-            }
-            
             if(!(pad->btn & PAD_LEFT)) 
             {
-                (*pos_x)--;
+                (*player).x--;
             } 
             else if(!(pad->btn & PAD_RIGHT)) 
             {
-                (*pos_x)++;
+                (*player).x++;
+            }
+
+            if(!(pad->btn & PAD_UP)) 
+            {
+                (*player).y--;
+            } 
+            else if(!(pad->btn & PAD_DOWN)) 
+            {
+                (*player).y++;
             }
         }
     }
@@ -284,31 +291,38 @@ void getControllerInput(int *pos_x, int *pos_y) {
 
 int main() {
 
-    int pos_x = 48;
-    int pos_y = 48;
     int frames_passed = 0;
 
+    PLAYER_CHAR player = {
+        IDLE,
+        46,
+        46
+    };
+    
     init();
     
     while(1) {
     
-        getControllerInput(&pos_x, &pos_y);
+        getControllerInput(&player);
 
         // Debug position to screen
-        FntPrint("X:%d Y:%d", pos_x, pos_y);
+        FntPrint("X:%d Y:%d", player.x, player.y);
 
         // Clear ordering table
         ClearOTagR(ot[db], OTLEN);      
     
-        // Sort textured sprites
-        if (frames_passed > 30) {
-            sortSpriteSheetSprite(pos_x, pos_y, 16, 32, 1, 0, &my_sprite, &draw[db], ot[db]);
-        } else {
-            sortSpriteSheetSprite(pos_x, pos_y, 16, 32, 0, 0, &my_sprite, &draw[db], ot[db]);
-        }
-        
-        // Sort untextured tile primitives
-        sortCube64(32, 32, ot[db]);
+        // Sort textured sprites for player character
+        if (player.state == IDLE) 
+        {
+            if (frames_passed > 30) 
+            {
+                sortSpriteSheetSprite(player.x, player.y, 16, 32, 1, 0, &my_sprite, &draw[db], ot[db]);
+            } 
+            else 
+            {
+                sortSpriteSheetSprite(player.x, player.y, 16, 32, 0, 0, &my_sprite, &draw[db], ot[db]);
+            }
+        } 
     
         // Update the display
         display();
