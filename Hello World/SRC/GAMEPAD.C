@@ -13,33 +13,22 @@ void initGamePad() {
     ChangeClearPAD(1);
 }
 
-void getControllerInput(PLAYER_CHAR *player) {
+BUTTONS_PRESSED getControllerInput() {
     
   	PADTYPE *pad;
+    BUTTONS_PRESSED buttons_pressed;
+
     pad = (PADTYPE*)padbuff[0];
 
     if (pad->stat == PAD_STATUS_CONNECTED) 
     {
         if ((pad->type == PAD_TYPE_DIGITAL) || (pad->type == PAD_TYPE_DUAL_ANALOG) || (pad->type == PAD_TYPE_DUAL_SHOCK)) 
         {
-            // MOVE LEFT
-            if(!(pad->btn & PAD_LEFT)) 
-            {
-                (*player).x--;
-                (*player).facing_left = 1;
-            } 
-            // MOVE RIGHT
-            else if(!(pad->btn & PAD_RIGHT)) 
-            {
-                (*player).x++;
-                (*player).facing_left = 0;
-            }
-
-            // JUMP
-            if(!(pad->btn & PAD_CROSS)) 
-            {
-                // TODO
-            } 
+            buttons_pressed.left_pressed = !(pad->btn & PAD_LEFT);
+            buttons_pressed.right_pressed = !(pad->btn & PAD_RIGHT);
+            buttons_pressed.cross_pressed = !(pad->btn & PAD_CROSS);
         }
     }
+
+    return buttons_pressed;
 }

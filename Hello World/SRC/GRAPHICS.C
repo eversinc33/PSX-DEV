@@ -120,7 +120,7 @@ void GetSprite(TIM_IMAGE *image, SPRITE *sprite) {
     
 }
 
-void drawPlayer(PLAYER_CHAR *player, int sprite_row, int sprite_col) {
+void drawPlayerSprite(PLAYER_CHAR *player, int sprite_row, int sprite_col) {
 
     SPRT *sprt = (SPRT*)nextpri;   
 

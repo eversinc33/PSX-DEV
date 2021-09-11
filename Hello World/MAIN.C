@@ -21,35 +21,12 @@ int main() {
 
         clearCurrentOrderingTable();
 
-        getControllerInput(&player);
+        movePlayer(&player);
 
         // Debug position to screen
         FntPrint("X:%d Y:%d", player.x, player.y);
 
-        // Sort textured sprites for player character
-        if (player.state == IDLE) 
-        {
-            int col = player.facing_left; // spritesheet column
-
-            if (frames_passed > 30) 
-            {
-                drawPlayer(&player, 1, col);
-            } 
-            else 
-            {
-                drawPlayer(&player, 0, col);
-            }
-        } 
-
-        // check ground and faill if not grounded
-        if (!player.on_ground) {
-            player.y++;
-        }
-        if (player.y == (232 - 32)) {
-            player.on_ground = 1;
-        }
-    
-        // Update the display
+        drawPlayer(&player, frames_passed);
         display();
         
         frames_passed++;

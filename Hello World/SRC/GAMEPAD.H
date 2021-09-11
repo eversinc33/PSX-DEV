@@ -7,7 +7,6 @@
 #include <libgte.h>	    // GTE header, not really used but libgpu.h depends on it
 #include <libgpu.h>	    // GPU library header
 #include <libapi.h>     // API header, has InitPAD() and StartPAD() defs
-#include "PLAYER.H"
 
 #define PAD_SELECT      1
 #define PAD_L3          2
@@ -42,7 +41,14 @@ typedef struct _PADTYPE
     unsigned char	ls_x,ls_y;
 } PADTYPE;
 
-void getControllerInput(PLAYER_CHAR *player); 
+typedef struct _BUTTONS_PRESSED
+{
+    int left_pressed;
+    int right_pressed;
+    int cross_pressed;
+} BUTTONS_PRESSED;
+
+BUTTONS_PRESSED getControllerInput(); 
 void initGamePad();
 
 #endif // GAMEPAD_H_

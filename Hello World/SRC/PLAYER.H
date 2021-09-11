@@ -7,6 +7,7 @@
 #include <libgte.h>	    // GTE header, not really used but libgpu.h depends on it
 #include <libgpu.h>	    // GPU library header
 #include <libapi.h>     // API header, has InitPAD() and StartPAD() defs
+#include "GAMEPAD.H"
 
 typedef enum { IDLE, MOVING } CHARACTER_STATE;
 
@@ -19,5 +20,7 @@ typedef struct _PLAYER_CHAR {
 } PLAYER_CHAR;
 
 PLAYER_CHAR initPlayer(int start_x, int start_y);
+void movePlayer(PLAYER_CHAR* player);
+void drawPlayer(PLAYER_CHAR* player, int frames_passed);
 
 #endif // PLAYER_H_
