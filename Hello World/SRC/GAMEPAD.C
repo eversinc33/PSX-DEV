@@ -1,0 +1,45 @@
+#include "GAMEPAD.H"
+
+u_char padbuff[2][34]; // Pad buffer arrays
+
+void initGamePad() {
+    // Initialize the pads
+    InitPAD(padbuff[0], 34, padbuff[1], 34);
+    
+    // Begin polling
+    StartPAD();
+    
+    // To avoid VSync Timeout error, may not be defined in PsyQ
+    ChangeClearPAD(1);
+}
+
+void getControllerInput(PLAYER_CHAR *player) {
+    
+  	PADTYPE *pad;
+    pad = (PADTYPE*)padbuff[0];
+
+    if (pad->stat == PAD_STATUS_CONNECTED) 
+    {
+        if ((pad->type == PAD_TYPE_DIGITAL) || (pad->type == PAD_TYPE_DUAL_ANALOG) || (pad->type == PAD_TYPE_DUAL_SHOCK)) 
+        {
+            // MOVE LEFT
+            if(!(pad->btn & PAD_LEFT)) 
+            {
+                (*player).x--;
+                (*player).facing_left = 1;
+            } 
+            // MOVE RIGHT
+            else if(!(pad->btn & PAD_RIGHT)) 
+            {
+                (*player).x++;
+                (*player).facing_left = 0;
+            }
+
+            // JUMP
+            if(!(pad->btn & PAD_CROSS)) 
+            {
+                // TODO
+            } 
+        }
+    }
+}
