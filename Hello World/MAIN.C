@@ -59,7 +59,7 @@ typedef struct _SPRITE {
 
 SPRITE my_sprite;
 TIM_IMAGE my_image;   
-extern u_long tim_my_image[]; // Refers to assembled tim-obj
+extern u_long char_sprite[]; // Refers to assembled tim-obj
 
 // Draw the screen
 void display() {
@@ -153,7 +153,7 @@ void init(void) {
     nextpri = pribuff[0];           
  
     // load textures 
-    LoadTexture(tim_my_image, &my_image);
+    LoadTexture(char_sprite, &my_image);
     GetSprite(&my_image, &my_sprite);
 
     // Load the internal font texture
@@ -171,7 +171,7 @@ void init(void) {
     StartPAD();
     
     // To avoid VSync Timeout error, may not be defined in PsyQ
-    ChangeClearPAD( 1 );
+    ChangeClearPAD(1);
  
 }
 
@@ -223,13 +223,12 @@ void sortCube64(int pos_x, int pos_y, u_long *currentOrderingTable) {
 }
 
 int main() {
-    
-    init();
 
-	PADTYPE *pad;
-
+  	PADTYPE *pad;
     int pos_x = 48;
     int pos_y = 48;
+
+    init();
     
     while(1) {
     
