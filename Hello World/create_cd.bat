@@ -1,1 +1,0 @@
-mkpsxiso cdrom.xml

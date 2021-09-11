@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<iso_project image_name="myimage.bin" cue_sheet="myimage.cue" no_xa="0">
+<iso_project image_name="build/myimage.bin" cue_sheet="build/myimage.cue" no_xa="0">
 
 	<track type="data">
 	
@@ -19,8 +19,8 @@
 		<directory_tree>
 		
 			<!-- Stores system.txt as system.cnf -->
-			<file name="SYSTEM.CNF"	type="data"	source="system.txt"/>
-			<file name="hello.exe"	type="data"	source="hello.exe"/>
+			<file name="SYSTEM.CNF"	type="data"	source="SYSTEM.CNF"/>
+			<file name="build.exe"	type="data"	source="build/build.exe"/>
 			
             <file name="char.tim" type="data" source="IMG/char.tim"/>
 			

@@ -1,7 +1,6 @@
 <tim_project>
     <properties buffer_res="0" buffer_order="0"/>
     <tim_group name="global">
-        <tim file="char.tim"/>
-        <tim file="sprite.tim"/>
+        <tim file="CHAR.TIM"/>
     </tim_group>
 </tim_project>
