@@ -36,6 +36,8 @@ char *nextpri;          // Pointer to next primitive
 #define PAD_TYPE_DUAL_ANALOG  0x5
 #define PAD_TYPE_DUAL_SHOCK   0x6
 
+#define PAD_STATUS_CONNECTED  0
+
 typedef struct _PADTYPE
 {
     unsigned char	stat;
@@ -200,6 +202,34 @@ void sortSprite(int pos_x, int pos_y, SPRITE *spriteToRender, DRAWENV *currentDr
     nextpri += sizeof(SPRT);        
 }
 
+void sortSpriteSheetSprite(int pos_x, int pos_y, int sprite_width, int sprite_height, int sprite_row, int sprite_col, SPRITE *spriteToRender, DRAWENV *currentDrawEnv, u_long *currentOrderingTable) {
+
+    SPRT *sprt = (SPRT*)nextpri;   
+
+    // calculate the u, v of the sprite to render from the sheet
+    int u = sprite_row * sprite_width;
+    int v = sprite_col * sprite_height;
+
+    // set texture page of sprite as tpage
+    currentDrawEnv->tpage = spriteToRender->texturePage;
+
+    // initialize
+    setSprt(sprt);                 
+
+    // set values (pos, size, uv, clut, color)
+    setXY0(sprt, pos_x, pos_y);           
+    setWH(sprt, sprite_width, sprite_height); 
+    setUV0(sprt, u, v);
+    sprt->clut = spriteToRender->clut;
+    setRGB0(sprt, 128, 128, 128);
+
+    // Sort primitive to the ordering table
+    addPrim(currentOrderingTable, sprt);        
+
+    // Advance next primitive address pointer
+    nextpri += sizeof(SPRT);        
+}
+
 // Add a cube to the ordering table
 void sortCube64(int pos_x, int pos_y, u_long *currentOrderingTable) {
 
@@ -222,43 +252,47 @@ void sortCube64(int pos_x, int pos_y, u_long *currentOrderingTable) {
     nextpri += sizeof(TILE);        
 }
 
+void getControllerInput(int *pos_x, int *pos_y) {
+    
+  	PADTYPE *pad;
+    pad = (PADTYPE*)padbuff[0];
+
+    if (pad->stat == PAD_STATUS_CONNECTED) 
+    {
+        if ((pad->type == PAD_TYPE_DIGITAL) || (pad->type == PAD_TYPE_DUAL_ANALOG) || (pad->type == PAD_TYPE_DUAL_SHOCK)) 
+        {
+            if(!(pad->btn & PAD_UP)) 
+            {
+                (*pos_y)--;
+            } 
+            else if(!(pad->btn & PAD_DOWN)) 
+            {
+                (*pos_y)++;
+            }
+            
+            if(!(pad->btn & PAD_LEFT)) 
+            {
+                (*pos_x)--;
+            } 
+            else if(!(pad->btn & PAD_RIGHT)) 
+            {
+                (*pos_x)++;
+            }
+        }
+    }
+}
+
 int main() {
 
-  	PADTYPE *pad;
     int pos_x = 48;
     int pos_y = 48;
+    int frames_passed = 0;
 
     init();
     
     while(1) {
     
-        // Parse controller input
-        pad = (PADTYPE*)padbuff[0];
-
-        // Only parse inputs when a controller is connected
-        if (pad->stat == 0) 
-        {
-            if ((pad->type == PAD_TYPE_DIGITAL) || (pad->type == PAD_TYPE_DUAL_ANALOG) || (pad->type == PAD_TYPE_DUAL_SHOCK)) 
-            {
-                if(!(pad->btn & PAD_UP)) 
-                {
-                    pos_y--;
-                } 
-                else if(!(pad->btn & PAD_DOWN)) 
-                {
-                    pos_y++;
-                }
-                
-                if(!(pad->btn & PAD_LEFT)) 
-                {
-                    pos_x--;
-                } 
-                else if(!(pad->btn & PAD_RIGHT)) 
-                {
-                    pos_x++;
-                }
-            }
-        }
+        getControllerInput(&pos_x, &pos_y);
 
         // Debug position to screen
         FntPrint("X:%d Y:%d", pos_x, pos_y);
@@ -267,15 +301,22 @@ int main() {
         ClearOTagR(ot[db], OTLEN);      
     
         // Sort textured sprites
-        sortSprite(pos_x, pos_y, &my_sprite, &draw[db], ot[db]);
-        sortSprite(pos_x+64, pos_y, &my_sprite, &draw[db], ot[db]);
+        if (frames_passed > 30) {
+            sortSpriteSheetSprite(pos_x, pos_y, 16, 32, 1, 0, &my_sprite, &draw[db], ot[db]);
+        } else {
+            sortSpriteSheetSprite(pos_x, pos_y, 16, 32, 0, 0, &my_sprite, &draw[db], ot[db]);
+        }
         
-        // Sort untextured tile primitive 
+        // Sort untextured tile primitives
         sortCube64(32, 32, ot[db]);
     
         // Update the display
         display();
         
+        frames_passed++;
+        if (frames_passed > 60) {
+            frames_passed = 0;
+        }
     }
     
     return 0;
