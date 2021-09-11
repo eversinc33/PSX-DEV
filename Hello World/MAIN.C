@@ -66,6 +66,8 @@ typedef enum { IDLE, MOVING } CHARACTER_STATE;
 
 typedef struct _PLAYER_CHAR {
     CHARACTER_STATE state;
+    int on_ground;
+    int facing_left;
     int x;
     int y;
 } PLAYER_CHAR;
@@ -141,6 +143,19 @@ void GetSprite(TIM_IMAGE *image, SPRITE *sprite) {
     
 }
 
+PLAYER_CHAR initPlayer(int start_x, int start_y) {
+
+    PLAYER_CHAR player;
+
+    player.state = IDLE;
+    player.on_ground = 0;
+    player.facing_left = 0;
+    player.x = start_x;
+    player.y = start_y;
+
+    return player;
+}
+
 void init(void) {
 	
     // Reset graphics
@@ -174,7 +189,7 @@ void init(void) {
     PutDrawEnv(&draw[!db]);
     
     // Initialize the pads
-    InitPAD( padbuff[0], 34, padbuff[1], 34 );
+    InitPAD(padbuff[0], 34, padbuff[1], 34);
     
     // Begin polling
     StartPAD();
@@ -184,32 +199,32 @@ void init(void) {
  
 }
 
-// Add spriteToRender to the ordering table
-void sortSprite(int x, int y, SPRITE *spriteToRender, DRAWENV *currentDrawEnv, u_long *currentOrderingTable) {
+// Add sprite_to_render to the ordering table
+void sortSprite(int x, int y, SPRITE *sprite_to_render, DRAWENV *curr_draw_env, u_long *curr_ot) {
 
     SPRT *sprt = (SPRT*)nextpri;   
 
     // set texture page of sprite as tpage
-    currentDrawEnv->tpage = spriteToRender->texturePage;
+    curr_draw_env->tpage = sprite_to_render->texturePage;
 
     // initialize
     setSprt(sprt);                 
 
     // set values (pos, size, uv, clut, color)
     setXY0(sprt, x, y);           
-    setWH(sprt, spriteToRender->width, spriteToRender->height); 
-    setUV0(sprt, spriteToRender->u, spriteToRender->v);
-    sprt->clut = spriteToRender->clut;
+    setWH(sprt, sprite_to_render->width, sprite_to_render->height); 
+    setUV0(sprt, sprite_to_render->u, sprite_to_render->v);
+    sprt->clut = sprite_to_render->clut;
     setRGB0(sprt, 128, 128, 128);
 
     // Sort primitive to the ordering table
-    addPrim(currentOrderingTable, sprt);        
+    addPrim(curr_ot, sprt);        
 
     // Advance next primitive address pointer
     nextpri += sizeof(SPRT);        
 }
 
-void sortSpriteSheetSprite(int x, int y, int sprite_width, int sprite_height, int sprite_row, int sprite_col, SPRITE *spriteToRender, DRAWENV *currentDrawEnv, u_long *currentOrderingTable) {
+void sortSpriteSheetSprite(int x, int y, int sprite_width, int sprite_height, int sprite_row, int sprite_col, SPRITE *sprite_to_render, DRAWENV *curr_draw_env, u_long *curr_ot) {
 
     SPRT *sprt = (SPRT*)nextpri;   
 
@@ -218,7 +233,7 @@ void sortSpriteSheetSprite(int x, int y, int sprite_width, int sprite_height, in
     int v = sprite_col * sprite_height;
 
     // set texture page of sprite as tpage
-    currentDrawEnv->tpage = spriteToRender->texturePage;
+    curr_draw_env->tpage = sprite_to_render->texturePage;
 
     // initialize
     setSprt(sprt);                 
@@ -227,11 +242,11 @@ void sortSpriteSheetSprite(int x, int y, int sprite_width, int sprite_height, in
     setXY0(sprt, x, y);           
     setWH(sprt, sprite_width, sprite_height); 
     setUV0(sprt, u, v);
-    sprt->clut = spriteToRender->clut;
+    sprt->clut = sprite_to_render->clut;
     setRGB0(sprt, 128, 128, 128);
 
     // Sort primitive to the ordering table
-    addPrim(currentOrderingTable, sprt);        
+    addPrim(curr_ot, sprt);        
 
     // Advance next primitive address pointer
     nextpri += sizeof(SPRT);        
@@ -268,23 +283,24 @@ void getControllerInput(PLAYER_CHAR *player) {
     {
         if ((pad->type == PAD_TYPE_DIGITAL) || (pad->type == PAD_TYPE_DUAL_ANALOG) || (pad->type == PAD_TYPE_DUAL_SHOCK)) 
         {
+            // MOVE LEFT
             if(!(pad->btn & PAD_LEFT)) 
             {
                 (*player).x--;
+                (*player).facing_left = 1;
             } 
+            // MOVE RIGHT
             else if(!(pad->btn & PAD_RIGHT)) 
             {
                 (*player).x++;
+                (*player).facing_left = 0;
             }
 
-            if(!(pad->btn & PAD_UP)) 
+            // JUMP
+            if(!(pad->btn & PAD_CROSS)) 
             {
-                (*player).y--;
+                // TODO
             } 
-            else if(!(pad->btn & PAD_DOWN)) 
-            {
-                (*player).y++;
-            }
         }
     }
 }
@@ -293,11 +309,7 @@ int main() {
 
     int frames_passed = 0;
 
-    PLAYER_CHAR player = {
-        IDLE,
-        46,
-        46
-    };
+    PLAYER_CHAR player = initPlayer(46, 46);
     
     init();
     
@@ -314,15 +326,25 @@ int main() {
         // Sort textured sprites for player character
         if (player.state == IDLE) 
         {
+            int col = player.facing_left; // spritesheet column
+
             if (frames_passed > 30) 
             {
-                sortSpriteSheetSprite(player.x, player.y, 16, 32, 1, 0, &my_sprite, &draw[db], ot[db]);
+                sortSpriteSheetSprite(player.x, player.y, 16, 32, 1, col, &my_sprite, &draw[db], ot[db]);
             } 
             else 
             {
-                sortSpriteSheetSprite(player.x, player.y, 16, 32, 0, 0, &my_sprite, &draw[db], ot[db]);
+                sortSpriteSheetSprite(player.x, player.y, 16, 32, 0, col, &my_sprite, &draw[db], ot[db]);
             }
         } 
+
+        // check ground and faill if not grounded
+        if (!player.on_ground) {
+            player.y++;
+        }
+        if (player.y == (232 - 32)) {
+            player.on_ground = 1;
+        }
     
         // Update the display
         display();
