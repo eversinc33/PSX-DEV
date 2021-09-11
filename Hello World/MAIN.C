@@ -7,6 +7,7 @@
 #include "SRC/GAMEPAD.H"
 #include "SRC/PLAYER.H"
 #include "SRC/GRAPHICS.H"
+#include "SRC/CDROM.H"
 
 int main() {
 
@@ -14,6 +15,11 @@ int main() {
 
     PLAYER_CHAR player = initPlayer(46, 46);
     
+    // Reset graphics
+    ResetGraph(0);
+
+    // init components
+    initCdrom();
     initGraphics();
     initGamePad();
     

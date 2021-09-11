@@ -4,6 +4,7 @@
         "MAIN.C": "cpp",
         "PLAYER.C": "cpp",
         "GAMEPAD.C": "cpp",
-        "GRAPHICS.C": "cpp"
+        "GRAPHICS.C": "cpp",
+        "CDROM.C": "cpp"
     }
 }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<iso_project image_name="myimage.bin" cue_sheet="myimage.cue" no_xa="0">
+
+	<track type="data">
+	
+		<identifiers
+			system			="PLAYSTATION"
+			application		="PLAYSTATION"
+			volume			="MYDISC"
+			volume_set		="MYDISC"
+			publisher		="ME"
+			data_preparer	="MKPSXISO"
+			copyright		="COPYLEFT"
+		/>
+		
+		<license file="LICENSEA.DAT"/>
+		
+		<directory_tree>
+		
+			<!-- Stores system.txt as system.cnf -->
+			<file name="SYSTEM.CNF"	type="data"	source="system.txt"/>
+			<file name="hello.exe"	type="data"	source="hello.exe"/>
+			
+            <file name="char.tim" type="data" source="IMG/char.tim"/>
+			
+			<dummy sectors="1024"/>
+			
+			<!-- <file name="audio1.da" type="da" source="myaudio1.wav"/> -->
+		
+		</directory_tree>
+		
+	</track>
+
+	<!-- Specifies additional CD-DA audio tracks to the CD image.	
+	<track type="audio" source="myaudio2.wav"/>
+	<track type="audio" source="myaudio3.wav"/>
+	-->
+
+</iso_project>
