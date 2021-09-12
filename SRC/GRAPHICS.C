@@ -66,7 +66,7 @@ void display() {
     nextpri = pribuff[db];  
 }
 
-void loadSpriteFromCd(SPRITE *sprite, char *sprite_name) {
+void loadSpriteFromCd(char *sprite_name, SPRITE *sprite) {
 
     u_long *filebuff; 
     TIM_IMAGE image; 
@@ -128,13 +128,13 @@ void GetSprite(TIM_IMAGE *image, SPRITE *sprite) {
     
 }
 
-void drawSprite(SPRITE *sprite, int x, int y, int sprite_row, int sprite_col) {
+void drawSprite(SPRITE *sprite, int x, int y, int sprite_row, int sprite_col, int sprite_width, int sprite_height) {
 
     SPRT *sprt = (SPRT*)nextpri;   
 
     // calculate the u, v of the sprite to render from the sheet
-    int u = sprite_row * 16; // TODO get from sprite struct
-    int v = sprite_col * 32;
+    int u = sprite_row * sprite_width; 
+    int v = sprite_col * sprite_height;
     u_long *current_ordering_table = ot[db];
 
     // set texture page of sprite as tpage for current draw environment
@@ -145,9 +145,9 @@ void drawSprite(SPRITE *sprite, int x, int y, int sprite_row, int sprite_col) {
 
     // set values (pos, size, uv, clut, color)
     setXY0(sprt, x, y);           
-    setWH(sprt, 16, 32);  // TODO get width and height of sprite from player 
+    setWH(sprt, sprite_width, sprite_height);  
     setUV0(sprt, u, v);
-    (*sprt).clut = sprite->clut; // TODO get sprite to render from player
+    (*sprt).clut = sprite->clut; 
     setRGB0(sprt, 128, 128, 128);
 
     // Sort primitive to the ordering table

@@ -7,16 +7,20 @@ int jump_pressed_frames;
 PLAYER_CHAR initPlayer(int start_x, int start_y) {
 
     PLAYER_CHAR player;
+    SPRITE* sprite;
 
     player.state = IDLE;
     player.on_ground = 0;
     player.facing_left = 0;
     player.x = start_x;
     player.y = start_y;
+    player.width = 16;
+    player.height = 32;
     player.x_vel = 0;
     player.y_vel = 0;
 
-    loadSprite("\\CHAR.TIM;1", &player.sprite);
+    loadSpriteFromCd("\\CHAR.TIM;1", sprite);
+    player.sprite = sprite;
     
     return player;
 }
@@ -119,43 +123,37 @@ void drawPlayer(PLAYER_CHAR *player, int frames_passed) {
     
     if (player->state == IDLE) 
     {
-        
-
         if (frames_passed > 30) 
         {
-            drawSprite(&player->sprite, player->x, player->y, 1, col);
+            drawSprite(player->sprite, player->x, player->y, 1, col, player->width, player->height);
         } 
         else 
         {
-            drawSprite(&player->sprite, player->x, player->y, 0, col);
+            drawSprite(player->sprite, player->x, player->y, 0, col, player->width, player->height);
         }
     } 
 
     else if (player->state == WALK) 
     {
-        int col = player->facing_left; // spritesheet column
-
         if (frames_passed > 30) 
         {
-            drawSprite(&player->sprite, player->x, player->y, 1, col);
+            drawSprite(player->sprite, player->x, player->y, 1, col, player->width, player->height);
         } 
         else 
         {
-            drawSprite(&player->sprite, player->x, player->y, 0, col);
+            drawSprite(player->sprite, player->x, player->y, 0, col, player->width, player->height);
         }
     } 
 
     else if (player->state == IN_AIR) 
     {
-        int col = player->facing_left; // spritesheet column
-
         if (frames_passed > 30) 
         {
-            drawSprite(&player->sprite, player->x, player->y, 1, col);
+            drawSprite(player->sprite, player->x, player->y, 1, col, player->width, player->height);
         } 
         else 
         {
-            drawSprite(&player->sprite, player->x, player->y, 0, col);
+            drawSprite(player->sprite, player->x, player->y, 0, col, player->width, player->height);
         }
     } 
 }

@@ -13,10 +13,10 @@
 
 void initGraphics(void);
 void display();
-void loadSpriteFromCd(SPRITE *sprite, char *sprite_name);
+void loadSpriteFromCd(char *sprite_name, SPRITE *sprite);
 void LoadTexture(u_long *tim, TIM_IMAGE *imageBuffer);
 void GetSprite(TIM_IMAGE *image, SPRITE *sprite);
-void drawSprite(SPRITE *sprite, int x, int y, int sprite_row, int sprite_col);
+void drawSprite(SPRITE *sprite, int x, int y, int sprite_row, int sprite_col, int sprite_width, int sprite_height);
 void clearCurrentOrderingTable();
 
 #endif // GRAPHICS_H_

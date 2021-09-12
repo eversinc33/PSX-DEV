@@ -13,13 +13,15 @@ typedef struct _SPRITE {
 
 typedef struct _PLAYER_CHAR {
     CHARACTER_STATE state;
-    SPRITE sprite;
+    SPRITE* sprite;
     int on_ground;
     int facing_left;
     int x;
     int y;
     int x_vel;
     int y_vel;
+    int width;
+    int height;
 } PLAYER_CHAR;
 
 #endif // STRUCTS_H_

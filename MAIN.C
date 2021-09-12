@@ -13,7 +13,7 @@ int main() {
 
     int frames_passed = 0;
 
-    PLAYER_CHAR player = initPlayer(46, 46);
+    PLAYER_CHAR player;
     
     // Reset graphics
     ResetGraph(0);
@@ -22,6 +22,8 @@ int main() {
     initCdrom();
     initGraphics();
     initGamePad();
+
+    player = initPlayer(46, 46);
     
     while(1) {
 
