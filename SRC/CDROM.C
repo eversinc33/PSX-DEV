@@ -7,6 +7,9 @@
 #include <libapi.h>     // API header, has InitPAD() and StartPAD() defs
 #include <libcd.h>     
 
+TIM_IMAGE player_image; 
+u_long *filebuff;      // Pointer for the file loaded from the disc
+
 void initCdrom() {
     CdInit();
 }

@@ -25,12 +25,13 @@ int main() {
     
     while(1) {
 
+        // TODO: game object storing player, offsetx/y, frames passed etc
+        // TODO: scrolling with offset
+        // TODO: tilemap
+
         clearCurrentOrderingTable();
 
         updatePlayer(&player, frames_passed);
-
-        // Debug position to screen
-        FntPrint("X:%d Y:%d", player.x_vel, player.y_vel);
 
         display();
         
@@ -38,6 +39,8 @@ int main() {
         if (frames_passed > 60) {
             frames_passed = 0;
         }
+
+        FntPrint("X:%d Y:%d", player.x_vel, player.y_vel);
     }
     
     return 0;

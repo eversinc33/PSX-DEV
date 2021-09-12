@@ -16,6 +16,8 @@ PLAYER_CHAR initPlayer(int start_x, int start_y) {
     player.x_vel = 0;
     player.y_vel = 0;
 
+    loadSprite("\\CHAR.TIM;1", &player.sprite);
+    
     return player;
 }
 
@@ -112,17 +114,48 @@ void movePlayer(PLAYER_CHAR *player) {
 }
 
 void drawPlayer(PLAYER_CHAR *player, int frames_passed) {
+
+    int col = player->facing_left; // spritesheet column
+    
     if (player->state == IDLE) 
+    {
+        
+
+        if (frames_passed > 30) 
+        {
+            drawSprite(&player->sprite, player->x, player->y, 1, col);
+        } 
+        else 
+        {
+            drawSprite(&player->sprite, player->x, player->y, 0, col);
+        }
+    } 
+
+    else if (player->state == WALK) 
     {
         int col = player->facing_left; // spritesheet column
 
         if (frames_passed > 30) 
         {
-            drawPlayerSprite(player, 1, col);
+            drawSprite(&player->sprite, player->x, player->y, 1, col);
         } 
         else 
         {
-            drawPlayerSprite(player, 0, col);
+            drawSprite(&player->sprite, player->x, player->y, 0, col);
+        }
+    } 
+
+    else if (player->state == IN_AIR) 
+    {
+        int col = player->facing_left; // spritesheet column
+
+        if (frames_passed > 30) 
+        {
+            drawSprite(&player->sprite, player->x, player->y, 1, col);
+        } 
+        else 
+        {
+            drawSprite(&player->sprite, player->x, player->y, 0, col);
         }
     } 
 }

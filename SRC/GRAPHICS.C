@@ -8,11 +8,7 @@ int db = 0;
 u_long ot[2][OTLEN];    // Double buffered ordering table
 char pribuff[2][32768]; // Double buffered primitive buffer
 char *nextpri;          // Pointer to next primitive
-
-SPRITE player_sprite;
-TIM_IMAGE player_image;   
-u_long *filebuff;      // Pointer for the file loaded from the disc
-
+  
 void initGraphics(void) {
 
     // Init double buffers (draw- and display-buffers)
@@ -29,19 +25,6 @@ void initGraphics(void) {
 
     // Set initial primitive pointer address to beginning of the primitive buffer
     nextpri = pribuff[0];           
- 
-    // load player texture
-    if (filebuff = loadFileFromCdrom("\\CHAR.TIM;1"))
-    {    
-        LoadTexture(filebuff, &player_image);
-        GetSprite(&player_image, &player_sprite);
-        
-        free(filebuff);
-    }
-    else
-    {
-        printf( "Error: CHAR.TIM file not found.\n" );
-    }
     
     // Load the internal font texture
     FntLoad(960, 0);
@@ -81,6 +64,24 @@ void display() {
     // Swap buffers & reset next primitive pointer
     db = !db;                    
     nextpri = pribuff[db];  
+}
+
+void loadSpriteFromCd(SPRITE *sprite, char *sprite_name) {
+
+    u_long *filebuff; 
+    TIM_IMAGE image; 
+
+    if (filebuff = loadFileFromCdrom(sprite_name))
+    {    
+        LoadTexture(filebuff, &image);
+        GetSprite(&image, sprite);
+        
+        free(filebuff);
+    }
+    else
+    {
+        printf("[!] %s file not found.\n", sprite_name);
+    }
 }
 
 // Load texture from .TIM obj into imageBuffer
@@ -127,26 +128,26 @@ void GetSprite(TIM_IMAGE *image, SPRITE *sprite) {
     
 }
 
-void drawPlayerSprite(PLAYER_CHAR *player, int sprite_row, int sprite_col) {
+void drawSprite(SPRITE *sprite, int x, int y, int sprite_row, int sprite_col) {
 
     SPRT *sprt = (SPRT*)nextpri;   
 
     // calculate the u, v of the sprite to render from the sheet
-    int u = sprite_row * 16; // TODO get from player
+    int u = sprite_row * 16; // TODO get from sprite struct
     int v = sprite_col * 32;
     u_long *current_ordering_table = ot[db];
 
     // set texture page of sprite as tpage for current draw environment
-    draw[db].tpage = player_sprite.texturePage;  // TODO get sprite to render from player
+    draw[db].tpage = sprite->texturePage;  
 
     // initialize
     setSprt(sprt);                 
 
     // set values (pos, size, uv, clut, color)
-    setXY0(sprt, player->x, player->y);           
+    setXY0(sprt, x, y);           
     setWH(sprt, 16, 32);  // TODO get width and height of sprite from player 
     setUV0(sprt, u, v);
-    sprt->clut = player_sprite.clut; // TODO get sprite to render from player
+    (*sprt).clut = sprite->clut; // TODO get sprite to render from player
     setRGB0(sprt, 128, 128, 128);
 
     // Sort primitive to the ordering table
