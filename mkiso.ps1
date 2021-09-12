@@ -8,7 +8,7 @@ if ( !(Test-Path build) ) {
 }
 
 echo "[*] Compiling cpe"
-ccpsx -O2 -Xm -Xo0x80010000 MAIN.C SRC\GAMEPAD.C SRC\GRAPHICS.C SRC\PLAYER.C SRC\CDROM.C -o build\build.cpe
+ccpsx -O2 -Xm -Xo0x80010000 MAIN.C SRC\*.C -o build\build.cpe
 
 echo "[*] Converting to exe"
 cpe2x build\build.cpe

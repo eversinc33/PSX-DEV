@@ -27,12 +27,11 @@ int main() {
 
         clearCurrentOrderingTable();
 
-        movePlayer(&player);
+        updatePlayer(&player, frames_passed);
 
         // Debug position to screen
-        FntPrint("X:%d Y:%d", player.x, player.y);
+        FntPrint("X:%d Y:%d", player.x_vel, player.y_vel);
 
-        drawPlayer(&player, frames_passed);
         display();
         
         frames_passed++;

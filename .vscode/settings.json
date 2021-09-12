@@ -5,6 +5,7 @@
         "PLAYER.C": "cpp",
         "GAMEPAD.C": "cpp",
         "GRAPHICS.C": "cpp",
-        "CDROM.C": "cpp"
+        "CDROM.C": "cpp",
+        "LIBAPI.H": "cpp"
     }
 }

@@ -1,6 +1,9 @@
 #include "PLAYER.H"
 #include "GRAPHICS.H"
 
+int jump_pressed;
+int jump_pressed_frames;
+
 PLAYER_CHAR initPlayer(int start_x, int start_y) {
 
     PLAYER_CHAR player;
@@ -10,40 +13,87 @@ PLAYER_CHAR initPlayer(int start_x, int start_y) {
     player.facing_left = 0;
     player.x = start_x;
     player.y = start_y;
+    player.x_vel = 0;
+    player.y_vel = 0;
 
     return player;
 }
 
-void movePlayer(PLAYER_CHAR* player) {
+void updatePlayer(PLAYER_CHAR *player, int frames_passed) {
 
+    fallIfNotOnGround(player);
+    detectCollisions(player);
+    movePlayer(player);
+    drawPlayer(player, frames_passed);
+
+}
+
+void fallIfNotOnGround(PLAYER_CHAR *player) {
+    if (!player->on_ground) {
+        if (player->y_vel < MAX_FALLING_SPEED) {
+            (*player).y_vel += GRAVITY;
+        }
+    }
+}
+
+void detectCollisions(PLAYER_CHAR *player) {
+    // TODO screensize macro, proper coll detection
+
+    // Lower screen border
+    if (player->y >= (232 - 32) && !player->on_ground) { 
+        (*player).on_ground = 1;
+        (*player).y_vel = 0;
+        (*player).y = 232 - 32;
+    }
+}
+
+void movePlayer(PLAYER_CHAR *player) {
+
+    // (*player).state = IDLE; TODO states and animations
     BUTTONS_PRESSED buttons_pressed = getControllerInput(); 
 
     // MOVE
     if (buttons_pressed.left_pressed) 
     {
-        (*player).x--;
+        (*player).x_vel = -WALK_SPEED;
         (*player).facing_left = 1;
     }
     else if (buttons_pressed.right_pressed) 
     {
-        (*player).x++;
+        (*player).x_vel = WALK_SPEED;
         (*player).facing_left = 0;
+    }
+    else 
+    {
+        (*player).x_vel = 0;
     }
 
     // JUMP
-    if (buttons_pressed.cross_pressed) 
+    if (buttons_pressed.cross_pressed && player->on_ground) 
     {
-        // TODO
+        // avoid bunny hop
+        if (!jump_pressed) {
+            (*player).y_vel = -JUMP_SPEED;
+            (*player).on_ground = 0;
+            jump_pressed = 1;
+        }
+    }
+    if (buttons_pressed.cross_pressed && player->y_vel < 0)
+    {
+        // if still pressed after x frames, increase height of jump
+        if (jump_pressed_frames > JUMP_INCREASE_THRESHOLD && jump_pressed_frames <= JUMP_PRESS_MAX_DURATION) {
+            (*player).y_vel = player->y_vel - 1;
+        }
+        jump_pressed_frames++;
+    }
+    if (!buttons_pressed.cross_pressed)
+    {
+        jump_pressed = 0;
+        jump_pressed_frames = 0;
     }
 
-
-    // FALL
-    if (!player->on_ground) {
-        (*player).y++;
-    }
-    if (player->y == (232 - 32)) { // TODO screensize macro
-        (*player).on_ground = 1;
-    }
+    (*player).x += player->x_vel;
+    (*player).y += player->y_vel;
 }
 
 void drawPlayer(PLAYER_CHAR *player, int frames_passed) {
