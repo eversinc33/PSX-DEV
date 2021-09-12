@@ -24,8 +24,24 @@ void updatePlayer(PLAYER_CHAR *player, int frames_passed) {
     fallIfNotOnGround(player);
     detectCollisions(player);
     movePlayer(player);
+    setState(player);
     drawPlayer(player, frames_passed);
 
+}
+
+void setState(PLAYER_CHAR *player) {
+    
+    (*player).state = IDLE; 
+
+    if (player->x_vel != 0) {
+        if (player->on_ground) {
+            (*player).state = WALK; 
+        } 
+    } 
+
+    if (!player->on_ground) {
+        (*player).state = IN_AIR;
+    }
 }
 
 void fallIfNotOnGround(PLAYER_CHAR *player) {
@@ -49,7 +65,6 @@ void detectCollisions(PLAYER_CHAR *player) {
 
 void movePlayer(PLAYER_CHAR *player) {
 
-    // (*player).state = IDLE; TODO states and animations
     BUTTONS_PRESSED buttons_pressed = getControllerInput(); 
 
     // MOVE

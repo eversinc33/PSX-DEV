@@ -16,7 +16,7 @@
 #define JUMP_INCREASE_THRESHOLD 2
 #define MAX_FALLING_SPEED 3
 
-typedef enum { IDLE, MOVING } CHARACTER_STATE;
+typedef enum { IDLE, WALK, IN_AIR } CHARACTER_STATE;
 
 typedef struct _PLAYER_CHAR {
     CHARACTER_STATE state;
