@@ -8,13 +8,13 @@
 #include "SRC/PLAYER.H"
 #include "SRC/GRAPHICS.H"
 #include "SRC/CDROM.H"
+#include "SRC/STRUCTS.H"
+#include "SRC/GAME.H"
+
+struct GAME game;
 
 int main() {
 
-    int frames_passed = 0;
-
-    PLAYER_CHAR player;
-    
     // Reset graphics
     ResetGraph(0);
 
@@ -23,8 +23,8 @@ int main() {
     initGraphics();
     initGamePad();
 
-    player = initPlayer(46, 46);
-    
+    initPlayer(game.player, 46, 46);
+
     while(1) {
 
         // TODO: game object storing player, offsetx/y, frames passed etc
@@ -33,16 +33,16 @@ int main() {
 
         clearCurrentOrderingTable();
 
-        updatePlayer(&player, frames_passed);
+        updatePlayer(game.player, game.frames_passed);
 
         display();
         
-        frames_passed++;
-        if (frames_passed > 60) {
-            frames_passed = 0;
+        game.frames_passed++;
+        if (game.frames_passed > 60) {
+            game.frames_passed = 0;
         }
 
-        FntPrint("X:%d Y:%d", player.x_vel, player.y_vel);
+        FntPrint("X:%d Y:%d", game.player->x_vel, game.player->y_vel);
     }
     
     return 0;

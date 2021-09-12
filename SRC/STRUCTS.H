@@ -24,4 +24,11 @@ typedef struct _PLAYER_CHAR {
     int height;
 } PLAYER_CHAR;
 
+typedef struct _GAME {
+    PLAYER_CHAR *player;
+    int frames_passed;
+    int camera_offset_x;
+    int camera_offset_y;
+} GAME;
+
 #endif // STRUCTS_H_

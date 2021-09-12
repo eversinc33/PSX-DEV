@@ -4,25 +4,23 @@
 int jump_pressed;
 int jump_pressed_frames;
 
-PLAYER_CHAR initPlayer(int start_x, int start_y) {
+PLAYER_CHAR initPlayer(PLAYER_CHAR* player, int start_x, int start_y) {
 
-    PLAYER_CHAR player;
     SPRITE* sprite;
 
-    player.state = IDLE;
-    player.on_ground = 0;
-    player.facing_left = 0;
-    player.x = start_x;
-    player.y = start_y;
-    player.width = 16;
-    player.height = 32;
-    player.x_vel = 0;
-    player.y_vel = 0;
+    player->state = IDLE;
+    player->on_ground = 0;
+    player->facing_left = 0;
+    player->x = start_x;
+    player->y = start_y;
+    player->width = 16;
+    player->height = 32;
+    player->x_vel = 0;
+    player->y_vel = 0;
 
     loadSpriteFromCd("\\CHAR.TIM;1", sprite);
-    player.sprite = sprite;
+    player->sprite = sprite;
     
-    return player;
 }
 
 void updatePlayer(PLAYER_CHAR *player, int frames_passed) {
