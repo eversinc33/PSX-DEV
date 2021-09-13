@@ -25,12 +25,13 @@ int main() {
 
     initPlayer(game.player, 46, 46);
 
+    printf("[!] Done\n");
+
     game.camera_offset_x = 0;
 
     while(1) {
 
         // TODO: tilemap
-
         clearCurrentOrderingTable();
 
         updatePlayer(game.player, game.frames_passed);

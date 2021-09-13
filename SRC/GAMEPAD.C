@@ -1,6 +1,6 @@
 #include "GAMEPAD.H"
 
-u_char padbuff[2][34]; 
+char padbuff[2][34]; 
 
 void initGamePad() {
 

@@ -1,11 +1,10 @@
 {
     "files.associations": {
-        "libapi.h": "c",
         "MAIN.C": "cpp",
-        "PLAYER.C": "cpp",
         "GAMEPAD.C": "cpp",
-        "GRAPHICS.C": "cpp",
         "CDROM.C": "cpp",
-        "LIBAPI.H": "cpp"
+        "GRAPHICS.H": "cpp",
+        "GRAPHICS.C": "cpp",
+        "PLAYER.C": "cpp"
     }
 }
