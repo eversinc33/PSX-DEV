@@ -1,2 +1,7 @@
 LICENSEA.DAT
 build/
+*.elf
+*.o
+*.ps-exe
+*.map
+SRC/*.o

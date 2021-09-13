@@ -32,12 +32,16 @@ u_long *loadFileFromCdrom(char *filename)
     {
         sectors_to_read = (filePos.size + 2047) / 2048;
 
-        buff = (u_long*)(malloc(2048 * sectors_to_read));
+        buff = (u_long*) malloc3(2048 * sectors_to_read);
 
-        CdControl(CdlSetloc, (u_char*) &filePos.pos, 0);
-        CdRead(sectors_to_read, buff, CdlModeSpeed);
+        if (buff) {
+            CdControl(CdlSetloc, (u_char*) &filePos.pos, 0);
+            CdRead(sectors_to_read, buff, CdlModeSpeed);
 
-        CdReadSync(0, 0);
+            CdReadSync(0, 0);
+        } else {
+            printf("[!] Allocation failed");
+        }
     }
 
     return buff;

@@ -75,7 +75,6 @@ void loadSpriteFromCd(char *sprite_name, SPRITE *sprite) {
     printf("[!] Loading %s file.\n", sprite_name);
     if (filebuff = loadFileFromCdrom(sprite_name))
     {
-        printf("[!] Loading %s file.\n", sprite_name);
         LoadTexture(filebuff, &image);
         GetSprite(&image, sprite);
 
