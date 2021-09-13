@@ -25,24 +25,27 @@ int main() {
 
     initPlayer(game.player, 46, 46);
 
+    game.camera_offset_x = 0;
+
     while(1) {
 
-        // TODO: game object storing player, offsetx/y, frames passed etc
-        // TODO: scrolling with offset
         // TODO: tilemap
 
         clearCurrentOrderingTable();
 
         updatePlayer(game.player, game.frames_passed);
 
+        // game.camera_offset_x = game.camera_offset_x + game.player->x;
+        
         display();
         
         game.frames_passed++;
         if (game.frames_passed > 60) {
             game.frames_passed = 0;
         }
+        
+        FntPrint("%d", game.camera_offset_x);
 
-        FntPrint("X:%d Y:%d", game.player->x_vel, game.player->y_vel);
     }
     
     return 0;
