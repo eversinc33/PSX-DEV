@@ -4,7 +4,7 @@
 int jump_pressed;
 int jump_pressed_frames;
 
-PLAYER_CHAR initPlayer(PLAYER_CHAR* player, int start_x, int start_y) {
+void initPlayer(PLAYER_CHAR* player, int start_x, int start_y) {
 
     SPRITE* sprite;
 
@@ -20,7 +20,6 @@ PLAYER_CHAR initPlayer(PLAYER_CHAR* player, int start_x, int start_y) {
 
     loadSpriteFromCd("\\CHAR.TIM;1", sprite);
     player->sprite = sprite;
-    
 }
 
 void updatePlayer(PLAYER_CHAR *player, int frames_passed) {

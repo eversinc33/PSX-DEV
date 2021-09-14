@@ -22,7 +22,7 @@
 			<file name="SYSTEM.CNF"	type="data"	source="SYSTEM.CNF"/>
 			<file name="game.exe"	type="data"	source="GAME.ps-exe"/>
 
-            <file name="char.tim" type="data" source="IMG/char.tim"/>
+            <file name="char.tim" type="data" source="IMG/CHAR.TIM"/>
 
 			<dummy sectors="1024"/>
 

@@ -94,14 +94,15 @@ void LoadTexture(u_long *tim, TIM_IMAGE *imageBuffer) {
     ReadTIM(imageBuffer);
 
     // Load pixel into framebuffer
-    LoadImage(imageBuffer->prect, (u_long*)imageBuffer->paddr);
+    LoadImage(imageBuffer->prect, imageBuffer->paddr);
     DrawSync(0);
 
-    // Upload CLUT to framebuffer if present
-    if (imageBuffer->mode & 0x8) {
-        LoadImage(imageBuffer->crect, (u_long*)imageBuffer->caddr);
+    // Upload CLUT to framebuffer if present (if 4th bit == 1, TIM has a CLUT)
+    if (imageBuffer->mode & 0x8) { 
+        LoadImage(imageBuffer->crect, imageBuffer->caddr);
         DrawSync(0);
     }
+
 }
 
 void GetSprite(TIM_IMAGE *image, SPRITE *sprite) {

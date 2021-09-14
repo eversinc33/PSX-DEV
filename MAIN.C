@@ -9,9 +9,8 @@
 #include "SRC/GRAPHICS.H"
 #include "SRC/CDROM.H"
 #include "SRC/STRUCTS.H"
-#include "SRC/GAME.H"
 
-struct GAME game;
+int frames_passed;
 
 int main() {
 
@@ -23,29 +22,26 @@ int main() {
     initGraphics();
     initGamePad();
 
-    initPlayer(game.player, 46, 46);
+    PLAYER_CHAR* player;
+    initPlayer(player, 46, 46);
 
-    printf("[!] Done\n");
-
-    game.camera_offset_x = 0;
+    printf("\n[!] Done\n");
 
     while(1) {
 
         // TODO: tilemap
         clearCurrentOrderingTable();
 
-        updatePlayer(game.player, game.frames_passed);
+        updatePlayer(player, frames_passed);
 
-        // game.camera_offset_x = game.camera_offset_x + game.player->x;
-        
         display();
         
-        game.frames_passed++;
-        if (game.frames_passed > 60) {
-            game.frames_passed = 0;
+        frames_passed++;
+        if (frames_passed > 60) {
+            frames_passed = 0;
         }
         
-        FntPrint("%d", game.camera_offset_x);
+        FntPrint("X: %d Y: %d", player->x, player->y);
 
     }
     

@@ -44,5 +44,9 @@ u_long *loadFileFromCdrom(char *filename)
         }
     }
 
+    
+    printf("[*] %s%d\n", (char *)buff, VSync(-1));
+    printf("[*] File-Size: %dB sectors: %d", filePos.size, ((filePos.size + 2048 - 1) / 2048));
+
     return buff;
 }

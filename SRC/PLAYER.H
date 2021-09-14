@@ -17,7 +17,7 @@
 #define JUMP_INCREASE_THRESHOLD 2
 #define MAX_FALLING_SPEED 3
 
-PLAYER_CHAR initPlayer(PLAYER_CHAR* player, int start_x, int start_y);
+void initPlayer(PLAYER_CHAR* player, int start_x, int start_y);
 void updatePlayer(PLAYER_CHAR* player, int frames_passed);
 void movePlayer(PLAYER_CHAR* player);
 void fallIfNotOnGround(PLAYER_CHAR* player);
